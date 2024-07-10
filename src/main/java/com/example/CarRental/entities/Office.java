@@ -2,8 +2,6 @@ package com.example.CarRental.entities;
 
 import jakarta.persistence.*;
 
-import java.time.LocalDate;
-
 @Entity
 @Table(name = "offices")
 public class Office extends EntityId {
