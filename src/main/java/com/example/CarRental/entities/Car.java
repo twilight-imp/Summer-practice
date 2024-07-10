@@ -2,6 +2,8 @@ package com.example.CarRental.entities;
 
 import jakarta.persistence.*;
 
+import java.util.Set;
+
 @Entity
 @Table(name = "car")
 public class Car extends EntityId {
@@ -117,5 +119,8 @@ public class Car extends EntityId {
 
     public void setRentalConditions(RentalConditions rentalConditions) {
         this.rentalConditions = rentalConditions;
+    }
+
+    public Car() {
     }
 }
