@@ -2,7 +2,6 @@ package com.example.CarRental.entities;
 
 import jakarta.persistence.*;
 
-import java.util.Set;
 
 @Entity
 @Table(name = "car")
