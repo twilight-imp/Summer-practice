@@ -3,8 +3,7 @@ package com.example.CarRental.entities;
 import jakarta.persistence.*;
 
 @MappedSuperclass
-//@Inheritance(strategy= InheritanceType.JOINED)
-public abstract class EntityId{
+public abstract class BaseEntity {
     private long id;
 
     public void setId(long id) {
