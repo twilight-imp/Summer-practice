@@ -4,9 +4,9 @@ import jakarta.persistence.*;
 
 @MappedSuperclass
 public abstract class BaseEntity {
-    private long id;
+    private int id;
 
-    public void setId(long id) {
+    public void setId(int id) {
         this.id = id;
     }
 
