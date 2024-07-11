@@ -14,17 +14,17 @@ public class Request extends BaseEntity {
 
     private LocalDateTime dateEnd;
     private int numDays;
-    private Payment payment;
-    private String status;
+    private RequestStatus requestStatus;
 
-    public Request(Client client, Car car, LocalDateTime dateStart, LocalDateTime dateEnd, int numDays, Payment payment, String status) {
+    private Payment payment;
+
+    public Request(Client client, Car car, LocalDateTime dateStart, LocalDateTime dateEnd, int numDays, RequestStatus requestStatus) {
         this.client = client;
         this.car = car;
         this.dateStart = dateStart;
         this.dateEnd = dateEnd;
         this.numDays = numDays;
-        this.payment = payment;
-        this.status = status;
+        this.requestStatus = requestStatus;
     }
 
     protected Request() {
@@ -50,7 +50,7 @@ public class Request extends BaseEntity {
         this.car = car;
     }
 
-    @Column(nullable = false)
+    @Column(name = "date_start", nullable = false)
     public LocalDateTime getDateStart() {
         return dateStart;
     }
@@ -59,7 +59,7 @@ public class Request extends BaseEntity {
         this.dateStart = dateStart;
     }
 
-    @Column(nullable = false)
+    @Column(name = "date_end",nullable = false)
     public LocalDateTime getDateEnd() {
         return dateEnd;
     }
@@ -85,13 +85,14 @@ public class Request extends BaseEntity {
     public void setPayment(Payment payment) {
         this.payment = payment;
     }
-    @Column(length = 20, nullable = false)
-    public String getStatus() {
-        return status;
+    @Column(name = "status")
+    @Enumerated(EnumType.STRING)
+    public RequestStatus getRequestStatus() {
+        return requestStatus;
     }
 
-    public void setStatus(String status) {
-        this.status = status;
+    public void setRequestStatus(RequestStatus requestStatus) {
+        this.requestStatus = requestStatus;
     }
 
 }

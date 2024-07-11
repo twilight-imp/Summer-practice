@@ -2,34 +2,35 @@ package com.example.CarRental.entities;
 
 import jakarta.persistence.*;
 
+import java.util.Set;
+
 
 @Entity
 @Table(name = "car")
 public class Car extends BaseEntity {
     private String brand;
     private String model;
-    private String category;
+    private CarCategory carCategory;
     private int numberSeats;
-    private String enginType;
     private String color;
     private int yearRelease;
-    private String transmission;
     private int costPerDay;
-    private String status;
+
+    private CarStatus carStatus;
     private Office office;
     private RentalConditions rentalConditions;
 
-    public Car(String brand, String model, String category, int numberSeats, String enginType, String color, int yearRelease, String transmission, int costPerDay, String status, Office office, RentalConditions rentalConditions) {
+    private Set<Request> request;
+
+    public Car(String brand, String model, CarCategory carCategory, int numberSeats, String color, int yearRelease, int costPerDay, CarStatus carStatus, Office office, RentalConditions rentalConditions) {
         this.brand = brand;
         this.model = model;
-        this.category = category;
+        this.carCategory = carCategory;
         this.numberSeats = numberSeats;
-        this.enginType = enginType;
         this.color = color;
         this.yearRelease = yearRelease;
-        this.transmission = transmission;
         this.costPerDay = costPerDay;
-        this.status = status;
+        this.carStatus = carStatus;
         this.office = office;
         this.rentalConditions = rentalConditions;
     }
@@ -52,13 +53,13 @@ public class Car extends BaseEntity {
     public void setModel(String model) {
         this.model = model;
     }
-    @Column(length = 50, nullable = false)
-    public String getCategory() {
-        return category;
+    @Column(name = "status")
+    @Enumerated(EnumType.STRING)
+    public CarCategory getCarCategory() {
+        return carCategory;
     }
-
-    public void setCategory(String category) {
-        this.category = category;
+    public void setCarCategory(CarCategory carCategory) {
+        this.carCategory = carCategory;
     }
     @Column(name = "number_of_seats", nullable = false)
     public int getNumberSeats() {
@@ -67,14 +68,6 @@ public class Car extends BaseEntity {
 
     public void setNumberSeats(int numberSeats) {
         this.numberSeats = numberSeats;
-    }
-    @Column(length = 20 ,name = "type_of_engin", nullable = false)
-    public String getEnginType() {
-        return enginType;
-    }
-
-    public void setEnginType(String enginType) {
-        this.enginType = enginType;
     }
 
     @Column(length = 20, nullable = false)
@@ -93,14 +86,7 @@ public class Car extends BaseEntity {
     public void setYearRelease(int yearRelease) {
         this.yearRelease = yearRelease;
     }
-    @Column(length = 20, nullable = false)
-    public String getTransmission() {
-        return transmission;
-    }
 
-    public void setTransmission(String transmission) {
-        this.transmission = transmission;
-    }
 
     @Column(name = "cost_per_day", nullable = false)
     public int getCostPerDay() {
@@ -110,13 +96,13 @@ public class Car extends BaseEntity {
     public void setCostPerDay(int costPerDay) {
         this.costPerDay = costPerDay;
     }
-    @Column(length = 20, nullable = false)
-    public String getStatus() {
-        return status;
+    @Column(name = "status")
+    @Enumerated(EnumType.STRING)
+    public CarStatus getCarStatus() {
+        return carStatus;
     }
-
-    public void setStatus(String status) {
-        this.status = status;
+    public void setCarStatus(CarStatus carStatus) {
+        this.carStatus = carStatus;
     }
 
     @ManyToOne(optional = false)
@@ -137,4 +123,12 @@ public class Car extends BaseEntity {
         this.rentalConditions = rentalConditions;
     }
 
+    @OneToMany(mappedBy = "car", targetEntity = Request.class, fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    public Set<Request> getRequest() {
+        return request;
+    }
+
+    public void setRequest(Set<Request> request) {
+        this.request = request;
+    }
 }

@@ -4,6 +4,8 @@ import jakarta.persistence.*;
 
 import java.time.LocalDate;
 
+import java.util.Set;
+
 @Entity
 @Table(name = "clients")
 public class Client extends BaseEntity {
@@ -14,6 +16,8 @@ public class Client extends BaseEntity {
     private String phone;
     private String email;
     private int drivingExperience;
+
+    private Set<Request> request;
 
     public Client(String lastName, String name, String surname, LocalDate birthday, String phone, String email, int drivingExperience) {
         this.lastName = lastName;
@@ -87,4 +91,12 @@ public class Client extends BaseEntity {
         this.drivingExperience = drivingExperience;
     }
 
+    @OneToMany(mappedBy = "client", targetEntity = Request.class, fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    public Set<Request> getRequest() {
+        return request;
+    }
+
+    public void setRequest(Set<Request> request) {
+        this.request = request;
+    }
 }

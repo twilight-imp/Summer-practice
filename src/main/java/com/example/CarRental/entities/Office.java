@@ -2,6 +2,8 @@ package com.example.CarRental.entities;
 
 import jakarta.persistence.*;
 
+import java.util.Set;
+
 @Entity
 @Table(name = "offices")
 public class Office extends BaseEntity {
@@ -13,6 +15,8 @@ public class Office extends BaseEntity {
     private int numberHome;
     private String phone;
     private String email;
+
+    private Set<Car> car;
 
     public Office(String name, String city, String district, String street, int numberBuilding, int numberHome, String phone, String email) {
         this.name = name;
@@ -94,4 +98,12 @@ public class Office extends BaseEntity {
         this.email = email;
     }
 
+    @OneToMany(mappedBy = "car", targetEntity = Request.class, fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    public Set<Car> getCar() {
+        return car;
+    }
+
+    public void setCar(Set<Car> car) {
+        this.car = car;
+    }
 }

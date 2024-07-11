@@ -9,13 +9,13 @@ import java.time.LocalDateTime;
 public class Payment extends BaseEntity {
     private int amount;
     private LocalDateTime date;
-    private String status;
+    private PaymentStatus paymentStatus;
     private Request request;
 
-    public Payment(int amount, LocalDateTime date, String status, Request request) {
+    public Payment(int amount, LocalDateTime date, PaymentStatus paymentStatus, Request request) {
         this.amount = amount;
         this.date = date;
-        this.status = status;
+        this.paymentStatus = paymentStatus;
         this.request = request;
     }
 
@@ -38,13 +38,14 @@ public class Payment extends BaseEntity {
     public void setDate(LocalDateTime date) {
         this.date = date;
     }
-    @Column(nullable = false)
-    public String getStatus() {
-        return status;
+    @Column(name = "status")
+    @Enumerated(EnumType.STRING)
+    public PaymentStatus getPaymentStatus() {
+        return paymentStatus;
     }
 
-    public void setStatus(String status) {
-        this.status = status;
+    public void setPaymentStatus(PaymentStatus paymentStatus) {
+        this.paymentStatus = paymentStatus;
     }
     @OneToOne(mappedBy = "payment", targetEntity = Request.class)
     public Request getRequest() {
