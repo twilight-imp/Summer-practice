@@ -4,7 +4,7 @@ import jakarta.persistence.*;
 
 @Entity
 @Table(name = "offices")
-public class Office extends EntityId {
+public class Office extends BaseEntity {
     private String name;
     private String city;
     private String district;
@@ -13,6 +13,20 @@ public class Office extends EntityId {
     private int numberHome;
     private String phone;
     private String email;
+
+    public Office(String name, String city, String district, String street, int numberBuilding, int numberHome, String phone, String email) {
+        this.name = name;
+        this.city = city;
+        this.district = district;
+        this.street = street;
+        this.numberBuilding = numberBuilding;
+        this.numberHome = numberHome;
+        this.phone = phone;
+        this.email = email;
+    }
+
+    protected Office() {
+    }
 
     @Column(length = 50, nullable = false)
     public String getName() {
@@ -80,6 +94,4 @@ public class Office extends EntityId {
         this.email = email;
     }
 
-    public Office() {
-    }
 }

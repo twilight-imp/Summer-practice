@@ -4,7 +4,7 @@ import jakarta.persistence.*;
 
 @Entity
 @Table(name = "rent_conditions")
-public class RentalConditions extends EntityId {
+public class RentalConditions extends BaseEntity {
     private int minAge;
 
     private int minDrivingExperience;
@@ -14,6 +14,17 @@ public class RentalConditions extends EntityId {
     private int includeMileage;
 
     private Car car;
+
+    public RentalConditions(int minAge, int minDrivingExperience, int minRentDays, int includeMileage, Car car) {
+        this.minAge = minAge;
+        this.minDrivingExperience = minDrivingExperience;
+        this.minRentDays = minRentDays;
+        this.includeMileage = includeMileage;
+        this.car = car;
+    }
+
+    protected RentalConditions() {
+    }
 
     @Column
     public int getMinAge() {
@@ -60,6 +71,4 @@ public class RentalConditions extends EntityId {
         this.car = car;
     }
 
-    public RentalConditions() {
-    }
 }

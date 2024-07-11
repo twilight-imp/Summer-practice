@@ -6,13 +6,29 @@ import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "request")
-public class Request extends EntityId {
+public class Request extends BaseEntity {
     private Client client;
     private Car car;
-    private LocalDateTime date;
+
+    private LocalDateTime dateStart;
+
+    private LocalDateTime dateEnd;
     private int numDays;
     private Payment payment;
     private String status;
+
+    public Request(Client client, Car car, LocalDateTime dateStart, LocalDateTime dateEnd, int numDays, Payment payment, String status) {
+        this.client = client;
+        this.car = car;
+        this.dateStart = dateStart;
+        this.dateEnd = dateEnd;
+        this.numDays = numDays;
+        this.payment = payment;
+        this.status = status;
+    }
+
+    protected Request() {
+    }
 
     @ManyToOne(optional = false)
     @JoinColumn(name = "client_id", referencedColumnName = "id")
@@ -35,13 +51,23 @@ public class Request extends EntityId {
     }
 
     @Column(nullable = false)
-    public LocalDateTime getDate() {
-        return date;
+    public LocalDateTime getDateStart() {
+        return dateStart;
     }
 
-    public void setDate(LocalDateTime date) {
-        this.date = date;
+    public void setDateStart(LocalDateTime dateStart) {
+        this.dateStart = dateStart;
     }
+
+    @Column(nullable = false)
+    public LocalDateTime getDateEnd() {
+        return dateEnd;
+    }
+
+    public void setDateEnd(LocalDateTime dateEnd) {
+        this.dateEnd = dateEnd;
+    }
+
     @Column(nullable = false)
     public int getNumDays() {
         return numDays;
@@ -68,6 +94,4 @@ public class Request extends EntityId {
         this.status = status;
     }
 
-    public Request() {
-    }
 }

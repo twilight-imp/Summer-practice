@@ -5,7 +5,7 @@ import jakarta.persistence.*;
 
 @Entity
 @Table(name = "car")
-public class Car extends EntityId {
+public class Car extends BaseEntity {
     private String brand;
     private String model;
     private String category;
@@ -19,6 +19,23 @@ public class Car extends EntityId {
     private Office office;
     private RentalConditions rentalConditions;
 
+    public Car(String brand, String model, String category, int numberSeats, String enginType, String color, int yearRelease, String transmission, int costPerDay, String status, Office office, RentalConditions rentalConditions) {
+        this.brand = brand;
+        this.model = model;
+        this.category = category;
+        this.numberSeats = numberSeats;
+        this.enginType = enginType;
+        this.color = color;
+        this.yearRelease = yearRelease;
+        this.transmission = transmission;
+        this.costPerDay = costPerDay;
+        this.status = status;
+        this.office = office;
+        this.rentalConditions = rentalConditions;
+    }
+
+    protected Car() {
+    }
     @Column(length = 20, nullable = false)
     public String getBrand() {
         return brand;
@@ -120,6 +137,4 @@ public class Car extends EntityId {
         this.rentalConditions = rentalConditions;
     }
 
-    public Car() {
-    }
 }

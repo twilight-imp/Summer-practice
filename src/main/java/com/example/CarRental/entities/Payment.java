@@ -6,11 +6,21 @@ import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "payment")
-public class Payment extends EntityId {
+public class Payment extends BaseEntity {
     private int amount;
     private LocalDateTime date;
     private String status;
     private Request request;
+
+    public Payment(int amount, LocalDateTime date, String status, Request request) {
+        this.amount = amount;
+        this.date = date;
+        this.status = status;
+        this.request = request;
+    }
+
+    protected Payment() {
+    }
 
     @Column(nullable = false)
     public int getAmount() {

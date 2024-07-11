@@ -6,7 +6,7 @@ import java.time.LocalDate;
 
 @Entity
 @Table(name = "clients")
-public class Client extends EntityId {
+public class Client extends BaseEntity {
     private String lastName;
     private String name;
     private String surname;
@@ -14,6 +14,19 @@ public class Client extends EntityId {
     private String phone;
     private String email;
     private int drivingExperience;
+
+    public Client(String lastName, String name, String surname, LocalDate birthday, String phone, String email, int drivingExperience) {
+        this.lastName = lastName;
+        this.name = name;
+        this.surname = surname;
+        this.birthday = birthday;
+        this.phone = phone;
+        this.email = email;
+        this.drivingExperience = drivingExperience;
+    }
+
+    protected Client() {
+    }
 
     @Column(name = "last_name", length = 50, nullable = false)
     public String getLastName() {
@@ -74,6 +87,4 @@ public class Client extends EntityId {
         this.drivingExperience = drivingExperience;
     }
 
-    public Client() {
-    }
 }
