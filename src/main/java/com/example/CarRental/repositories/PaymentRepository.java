@@ -12,8 +12,8 @@ import java.util.List;
 @Repository
 public interface PaymentRepository extends JpaRepository<Payment, Integer> {
 
-    @Query(value = "select p from Payment " +
-            "join p.request r where r.dateStart < :dateStart "
+    @Query(value = "select p from Payment p " +
+            "join p.request where request.dateStart < :dateStart "
     )
     List<Payment> findByStartRequest(@Param(value = "dateStart") LocalDateTime dateStart);
 }
