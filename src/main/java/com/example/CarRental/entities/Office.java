@@ -98,7 +98,7 @@ public class Office extends BaseEntity {
         this.email = email;
     }
 
-    @OneToMany(mappedBy = "car", targetEntity = Request.class, fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "office", targetEntity = Car.class, fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     public Set<Car> getCar() {
         return car;
     }

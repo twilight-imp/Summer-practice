@@ -6,7 +6,7 @@ import java.util.Set;
 
 
 @Entity
-@Table(name = "car")
+@Table(name = "cars")
 public class Car extends BaseEntity {
     private String brand;
     private String model;
@@ -53,7 +53,7 @@ public class Car extends BaseEntity {
     public void setModel(String model) {
         this.model = model;
     }
-    @Column(name = "status")
+    @Column(name = "category")
     @Enumerated(EnumType.STRING)
     public CarCategory getCarCategory() {
         return carCategory;
