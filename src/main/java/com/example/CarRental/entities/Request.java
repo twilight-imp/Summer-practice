@@ -76,8 +76,8 @@ public class Request extends BaseEntity {
     public void setNumDays(int numDays) {
         this.numDays = numDays;
     }
-    @OneToOne
-    @JoinColumn(name = "payment_id", referencedColumnName = "id")
+
+    @OneToOne(mappedBy = "request", targetEntity = Payment.class)
     public Payment getPayment() {
         return payment;
     }
