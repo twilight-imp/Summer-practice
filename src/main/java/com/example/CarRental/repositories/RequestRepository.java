@@ -1,8 +1,6 @@
 package com.example.CarRental.repositories;
 
-import com.example.CarRental.entities.Car;
 import com.example.CarRental.entities.Request;
-import com.example.CarRental.entities.RequestStatus;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -15,11 +13,10 @@ import java.util.List;
 public interface RequestRepository extends JpaRepository<Request, Integer> {
     @Query(value = "select count(*) from Request r " +
             "join r.client cl where cl.lastName = :lastName " +
-            "and r.requestStatus = :status " +
+            "and r.requestStatus = 'CONFIRMED' " +
             "and r.dateEnd < :dateEnd"
     )
-    List<Car> findCountByClientAndStatusAndDate(@Param(value = "lastName") String lastName,
-                                           @Param(value = "status") RequestStatus requestStatus,
+    List<Request> findCountByClientAndStatusAndDate(@Param(value = "lastName") String lastName,
                                            @Param(value = "dateEnd")LocalDateTime dateEnd
     );
 }

@@ -1,6 +1,5 @@
 package com.example.CarRental.repositories;
 
-import com.example.CarRental.entities.Car;
 import com.example.CarRental.entities.Payment;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -13,8 +12,8 @@ import java.util.List;
 @Repository
 public interface PaymentRepository extends JpaRepository<Payment, Integer> {
 
-    @Query(value = "select p from Payment" +
+    @Query(value = "select p from Payment " +
             "join p.request r where r.dateStart < :dateStart "
     )
-    List<Car> findByStartRequest(@Param(value = "data") LocalDateTime dateStart);
+    List<Payment> findByStartRequest(@Param(value = "dateStart") LocalDateTime dateStart);
 }
