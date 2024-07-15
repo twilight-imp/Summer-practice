@@ -1,4 +1,4 @@
-package com.example.CarRental.entities;
+package com.example.CarRental.domain;
 
 import jakarta.persistence.*;
 
@@ -12,7 +12,7 @@ public class Payment extends BaseEntity {
     private PaymentStatus paymentStatus;
     private Request request;
 
-    public Payment(int amount, LocalDateTime date, PaymentStatus paymentStatus, Request request) {
+    public Payment(int amount, LocalDateTime date, Request request) {
         this.amount = amount;
         this.date = date;
         this.paymentStatus = paymentStatus;

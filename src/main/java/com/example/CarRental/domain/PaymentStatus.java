@@ -1,4 +1,4 @@
-package com.example.CarRental.entities;
+package com.example.CarRental.domain;
 
 public enum PaymentStatus {
     AWAITING,

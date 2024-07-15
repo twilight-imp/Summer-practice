@@ -1,4 +1,4 @@
-package com.example.CarRental.entities;
+package com.example.CarRental.domain;
 
 import jakarta.persistence.*;
 
@@ -18,13 +18,13 @@ public class Request extends BaseEntity {
 
     private Payment payment;
 
-    public Request(Client client, Car car, LocalDateTime dateStart, LocalDateTime dateEnd, int numDays, RequestStatus requestStatus) {
+    public Request(Client client, Car car, LocalDateTime dateStart, LocalDateTime dateEnd, int numDays) {
         this.client = client;
         this.car = car;
         this.dateStart = dateStart;
         this.dateEnd = dateEnd;
         this.numDays = numDays;
-        this.requestStatus = requestStatus;
+        this.requestStatus = RequestStatus.CREATED;
     }
 
     protected Request() {

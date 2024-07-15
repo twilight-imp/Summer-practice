@@ -1,4 +1,4 @@
-package com.example.CarRental.entities;
+package com.example.CarRental.domain;
 
 import jakarta.persistence.*;
 
@@ -10,7 +10,6 @@ import java.util.Set;
 public class Car extends BaseEntity {
     private String brand;
     private String model;
-    private CarCategory carCategory;
     private int numberSeats;
     private String color;
     private int yearRelease;
@@ -22,15 +21,14 @@ public class Car extends BaseEntity {
 
     private Set<Request> request;
 
-    public Car(String brand, String model, CarCategory carCategory, int numberSeats, String color, int yearRelease, int costPerDay, CarStatus carStatus, Office office, RentalConditions rentalConditions) {
+    public Car(String brand, String model, int numberSeats, String color, int yearRelease, int costPerDay, Office office, RentalConditions rentalConditions) {
         this.brand = brand;
         this.model = model;
-        this.carCategory = carCategory;
         this.numberSeats = numberSeats;
         this.color = color;
         this.yearRelease = yearRelease;
         this.costPerDay = costPerDay;
-        this.carStatus = carStatus;
+        this.carStatus = CarStatus.AVAILABLE;
         this.office = office;
         this.rentalConditions = rentalConditions;
     }
@@ -52,14 +50,6 @@ public class Car extends BaseEntity {
 
     public void setModel(String model) {
         this.model = model;
-    }
-    @Column(name = "category")
-    @Enumerated(EnumType.STRING)
-    public CarCategory getCarCategory() {
-        return carCategory;
-    }
-    public void setCarCategory(CarCategory carCategory) {
-        this.carCategory = carCategory;
     }
     @Column(name = "number_of_seats", nullable = false)
     public int getNumberSeats() {
