@@ -1,19 +1,18 @@
 package com.example.CarRental.repositories;
 
-import com.example.CarRental.entities.Payment;
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.query.Param;
+import com.example.CarRental.domain.Payment;
+import com.example.CarRental.domain.PaymentStatus;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
 @Repository
-public interface PaymentRepository extends JpaRepository<Payment, Integer> {
+public interface PaymentRepository{
+    List<Payment> findByStartRequest(LocalDateTime dateStart);
 
-    @Query(value = "select p from Payment p " +
-            "join p.request where request.dateStart < :dateStart "
-    )
-    List<Payment> findByStartRequest(@Param(value = "dateStart") LocalDateTime dateStart);
+    List<Payment> findByClientId(int clientId);
+    void create(Payment payment);
+    Payment findById(Class<Payment> paymentClass, int id);
+    void updateStatus(int Id, PaymentStatus paymentStatus);
 }

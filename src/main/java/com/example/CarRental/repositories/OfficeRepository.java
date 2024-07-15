@@ -1,9 +1,11 @@
 package com.example.CarRental.repositories;
 
-import com.example.CarRental.entities.Office;
-import org.springframework.data.jpa.repository.JpaRepository;
+import com.example.CarRental.domain.Office;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface OfficeRepository extends JpaRepository<Office, Integer> {
+public interface OfficeRepository{
+    void create(Office office);
+    Office findById(Class<Office> officeClass, int id);
+    Office update(Office office);
 }

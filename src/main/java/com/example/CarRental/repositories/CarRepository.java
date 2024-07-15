@@ -1,19 +1,25 @@
 package com.example.CarRental.repositories;
 
-import com.example.CarRental.entities.Car;
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.query.Param;
+import com.example.CarRental.domain.Car;
+import com.example.CarRental.domain.CarStatus;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Repository
-public interface CarRepository extends JpaRepository<Car, Integer> {
-    @Query(value = "select c from Car c " +
-            "join c.office o where o.district = :district")
-    List<Car> findByDistrict(@Param(value = "district") String district);
+public interface CarRepository {
 
-    @Query(value = "select c from Car c where c.costPerDay < :cost")
-    List<Car> findByCost(@Param(value = "cost") Integer cost);
+    List<Car> findByCharacteristicsAndRegionAndCost(String district, String brand, String model, String color, int numberSeats, int costPerDay,  CarStatus carStatus);
+
+    Car findByRequest(int idCar, LocalDateTime dateStart, LocalDateTime dateEnd);
+
+
+
+    void create(Car car);
+    Car findById(Class<Car> carClass, int id);
+    Car update(Car car);
+    void updateStatus(int id, CarStatus carStatus);
+
+
 }
