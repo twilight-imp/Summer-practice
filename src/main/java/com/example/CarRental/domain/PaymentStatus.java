@@ -4,5 +4,5 @@ public enum PaymentStatus {
     AWAITING,
     COMPLETED,
     OVERDUE,
-    NOT_SUCCESSFUL
+    RETURNED
 }
