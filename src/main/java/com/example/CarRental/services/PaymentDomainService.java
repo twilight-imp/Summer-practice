@@ -9,4 +9,11 @@ public interface PaymentDomainService {
 
     boolean checkPayment(int idPayment);
 
+    void returnPayment(int idPayment);
+
+
+    void overduePayment(int idPayment);
+
+    int getDiscountByClient(int idClient);
+
 }

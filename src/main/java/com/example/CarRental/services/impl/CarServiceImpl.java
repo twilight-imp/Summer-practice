@@ -24,6 +24,7 @@ public class CarServiceImpl implements CarService {
         return carRepository.findById(Car.class, id);
     }
 
+    //поиск автомобиля на нужную дату с заданными параметрами в нужном районе
     @Override
     public Car findCarByCharacteristicsAndLocationAndDate(String district, String brand, String model, String color, int numberSeats, int budget, LocalDateTime startDate, int numDays) {
         int costPerDay = budget / numDays;

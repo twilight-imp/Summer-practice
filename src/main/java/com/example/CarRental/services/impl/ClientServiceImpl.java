@@ -2,7 +2,6 @@ package com.example.CarRental.services.impl;
 
 import com.example.CarRental.domain.Client;
 import com.example.CarRental.repositories.ClientRepository;
-import com.example.CarRental.repositories.impl.ClientRepositoryImpl;
 import com.example.CarRental.services.ClientService;
 import org.springframework.beans.factory.annotation.Autowired;
 
