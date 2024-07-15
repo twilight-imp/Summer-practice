@@ -8,4 +8,6 @@ public interface ClientRepository{
     void create(Client client);
     Client findById(Class<Client> clientClass, int id);
     Client update(Client client);
+
+    Client findByPhone(String phone);
 }

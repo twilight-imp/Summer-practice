@@ -9,7 +9,7 @@ import java.util.List;
 
 @Repository
 public interface PaymentRepository{
-    List<Payment> findByStartRequest(LocalDateTime dateStart);
+    Payment findByRequest(int idRequest);
 
     List<Payment> findByClientId(int clientId);
     void create(Payment payment);

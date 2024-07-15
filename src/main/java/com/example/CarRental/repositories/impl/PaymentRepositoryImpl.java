@@ -18,12 +18,13 @@ public class PaymentRepositoryImpl extends AbstractRepository<Payment> implement
     private EntityManager entityManager;
 
     @Override
-    public List<Payment> findByStartRequest(LocalDateTime dateStart) {
+    public Payment findByRequest(int idRequest) {
         TypedQuery<Payment> query = entityManager.createQuery(
                 "select p from Payment p " +
-                        "join p.request where request.dateStart < :dateStart ", Payment.class);
-        return query.setParameter("dateStart", dateStart)
-                .getResultList();
+                        "join p.request r " +
+                        "where r.id = :idRequest ", Payment.class);
+        return query.setParameter("idRequest", idRequest)
+                .getSingleResult();
     }
 
     @Override
