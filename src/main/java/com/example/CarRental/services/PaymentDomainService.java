@@ -16,4 +16,5 @@ public interface PaymentDomainService {
 
     int getDiscountByClient(int idClient);
 
+    void applyDiscount(int idPayment);
 }

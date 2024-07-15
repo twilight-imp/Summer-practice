@@ -25,13 +25,14 @@ public class PaymentDomainServiceImpl implements PaymentDomainService {
     private CarRepository carRepository;
 
 
-    //произведение оплаты со сменой статуса платежа и заявки
+    //произведение оплаты со сменой статуса платежа и заявки и применение скидки перед оплатой
     @Override
     public void makePayment(int idPayment) {
         Payment payment = paymentRepository.findById(Payment.class, idPayment);
         Request request = requestRepository.findByPayment(idPayment);
         if(payment.getPaymentStatus() == PaymentStatus.AWAITING) {
             if (checkPayment(idPayment)) {
+                applyDiscount(idPayment);
                 paymentRepository.updateStatus(idPayment, PaymentStatus.COMPLETED);
                 requestRepository.updateStatus(request.getId(), RequestStatus.CONFIRMED);
             }
@@ -67,6 +68,17 @@ public class PaymentDomainServiceImpl implements PaymentDomainService {
         else if (paymentRepository.findByClientId(idClient).size() > 15) return 10;
         else if (paymentRepository.findByClientId(idClient).size() > 5) return 5;
         else return 0;
+    }
+
+    @Override
+    public void applyDiscount(int idPayment) {
+        Payment payment = paymentRepository.findById(Payment.class, idPayment);
+        Client client = requestRepository.findByPayment(idPayment).getClient();
+        int discount = getDiscountByClient(client.getId());
+        if (discount!= 0){
+            int newAmount = (int) (payment.getAmount() - Math.round(payment.getAmount() * discount * 0.01));
+            paymentRepository.updateAmount(idPayment, newAmount );
+        }
     }
 
 

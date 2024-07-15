@@ -9,7 +9,6 @@ import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.TypedQuery;
 import org.springframework.stereotype.Repository;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 @Repository
@@ -45,6 +44,17 @@ public class PaymentRepositoryImpl extends AbstractRepository<Payment> implement
                         " WHERE p.id = :id ", Payment.class);
         query.setParameter("paymentStatus", paymentStatus)
                 .setParameter("id", id)
+                .getResultList();
+    }
+
+    @Override
+    public void updateAmount(int idPayment, int newAmount) {
+        TypedQuery<Payment> query = entityManager.createQuery(
+                "UPDATE Payment AS p " +
+                        " SET p.amount = :amount " +
+                        " WHERE p.id = :id ", Payment.class);
+        query.setParameter("amount", newAmount)
+                .setParameter("id", idPayment)
                 .getResultList();
     }
 }

@@ -14,5 +14,7 @@ public interface PaymentRepository{
     List<Payment> findByClientId(int clientId);
     void create(Payment payment);
     Payment findById(Class<Payment> paymentClass, int id);
-    void updateStatus(int Id, PaymentStatus paymentStatus);
+    void updateStatus(int id, PaymentStatus paymentStatus);
+
+    void updateAmount(int idPayment, int newAmount);
 }

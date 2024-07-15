@@ -15,7 +15,7 @@ public class Payment extends BaseEntity {
     public Payment(int amount, LocalDateTime date, Request request) {
         this.amount = amount;
         this.date = date;
-        this.paymentStatus = paymentStatus;
+        this.paymentStatus = PaymentStatus.AWAITING;
         this.request = request;
     }
 
