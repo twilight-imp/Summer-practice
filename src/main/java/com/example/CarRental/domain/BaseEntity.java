@@ -1,4 +1,4 @@
-package com.example.CarRental.entities;
+package com.example.CarRental.domain;
 
 import jakarta.persistence.*;
 
@@ -13,7 +13,7 @@ public abstract class BaseEntity {
     @Id
     @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    public long getId() {
+    public int getId() {
         return id;
     }
 }
