@@ -26,13 +26,13 @@ public class CarServiceImpl implements CarService {
 
     //поиск автомобиля на нужную дату с заданными параметрами в нужном районе
     @Override
-    public Car findCarByCharacteristicsAndLocationAndDate(String district, String brand, String model, String color, int numberSeats, int budget, LocalDateTime startDate, int numDays) {
+    public Car findCarByCharacteristicsAndLocationAndDate(String city, String district, String brand, String model, String color, int numberSeats, int budget, LocalDateTime startDate, int numDays) {
         int costPerDay = budget / numDays;
         CarStatus available = CarStatus.AVAILABLE;
-        List<Car> carList = carRepository.findByCharacteristicsAndRegionAndCost(district,brand,model,color,numberSeats,costPerDay,available);
+        List<Car> carList = carRepository.findByCharacteristicsAndRegionAndCost(city, district,brand,model,color,numberSeats,costPerDay,available);
         LocalDateTime endDate = startDate.plusDays(numDays);
         for (Car car: carList) {
-            if(carRepository.findByRequest(car.getId(), startDate, endDate) == null) return car;
+            if(carRepository.findByDateRequest(car.getId(), startDate, endDate) == null) return car;
         }
         return null;
     }

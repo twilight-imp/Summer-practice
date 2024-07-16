@@ -18,14 +18,15 @@ public class CarRepositoryImpl extends AbstractRepository<Car> implements CarRep
     private EntityManager entityManager;
 
     @Override
-    public List<Car> findByCharacteristicsAndRegionAndCost(String district, String brand, String model, String color, int numberSeats, int costPerDay, CarStatus carStatus) {
+    public List<Car> findByCharacteristicsAndRegionAndCost(String city, String district, String brand, String model, String color, int numberSeats, int costPerDay, CarStatus carStatus) {
         TypedQuery<Car> query = entityManager.createQuery(
                 "select c from Car c " +
                         "join c.office o " +
-                        "where o.district = :district " +
+                        "where o.city = :city and o.district = :district" +
                         "and c.costPerDay <= :cost and c.brand = :brand and c.model = :model and c.color = :color and c.numberSeats = :numberSeats " +
                         "and c.status = :carStatus " , Car.class);
-        return query.setParameter("district", district)
+        return query.setParameter("city", city)
+                .setParameter("district", district)
                 .setParameter("cost", costPerDay)
                 .setParameter("brand", brand)
                 .setParameter("model", model)
@@ -36,7 +37,7 @@ public class CarRepositoryImpl extends AbstractRepository<Car> implements CarRep
     }
 
     @Override
-    public Car findByRequest(int idCar, LocalDateTime dateStart, LocalDateTime dateEnd) {
+    public Car findByDateRequest(int idCar, LocalDateTime dateStart, LocalDateTime dateEnd) {
         TypedQuery<Car> query = entityManager.createQuery(
                 "select c from Car c " +
                         "join c.request r " +

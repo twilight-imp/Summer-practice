@@ -59,7 +59,7 @@ public class RequestDomainServiceImpl implements RequestDomainService {
     @Override
     public boolean checkCar(int id, LocalDateTime startDate, int numDays) {
         LocalDateTime endDate = startDate.plusDays(numDays);
-        Car car = carRepository.findByRequest(id, startDate, endDate);
+        Car car = carRepository.findByDateRequest(id, startDate, endDate);
         if (car == null) return true;
         return false;
     }

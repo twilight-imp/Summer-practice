@@ -10,9 +10,9 @@ import java.util.List;
 @Repository
 public interface CarRepository {
 
-    List<Car> findByCharacteristicsAndRegionAndCost(String district, String brand, String model, String color, int numberSeats, int costPerDay,  CarStatus carStatus);
+    List<Car> findByCharacteristicsAndRegionAndCost(String city, String district, String brand, String model, String color, int numberSeats, int costPerDay,  CarStatus carStatus);
 
-    Car findByRequest(int idCar, LocalDateTime dateStart, LocalDateTime dateEnd);
+    Car findByDateRequest(int idCar, LocalDateTime dateStart, LocalDateTime dateEnd);
 
 
 
