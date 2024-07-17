@@ -1,12 +1,14 @@
 package com.example.CarRental.services;
 
-import com.example.CarRental.domain.Client;
-import com.example.CarRental.domain.Request;
+import com.example.CarRental.dtos.RequestDto;
 
-import java.util.List;
 
 public interface RequestService {
 
-    Request getRequestById(int id);
+    boolean addRequest(RequestDto requestDto);
+    RequestDto getRequestById(int id);
+
+    boolean returnRequest(int idRequest);
+    boolean checkRequest(int idRequest);
 }
 

@@ -6,14 +6,15 @@ import org.springframework.stereotype.Repository;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface RequestRepository {
     List<Request> findByClientAndStatusAndDate(String lastName, RequestStatus requestStatus, LocalDateTime dateEnd);
 
-    void create(Request request);
-    Request findById(Class<Request> requestClass, int id);
-    void updateStatus(int id, RequestStatus requestStatus);
+    Request create(Request request);
+    Optional<Request> findById(Class<Request> requestClass, int id);
 
     Request findByPayment(int paymentId);
+
 }

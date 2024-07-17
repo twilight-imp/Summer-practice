@@ -1,15 +1,24 @@
 package com.example.CarRental.services.impl;
 
 import com.example.CarRental.domain.*;
+import com.example.CarRental.dtos.CarDto;
+import com.example.CarRental.dtos.OfficeDto;
+import com.example.CarRental.dtos.RequestDto;
 import com.example.CarRental.repositories.*;
-import com.example.CarRental.services.RequestDomainService;
+import com.example.CarRental.services.RequestService;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.Period;
+import java.time.chrono.ChronoLocalDateTime;
 
-public class RequestDomainServiceImpl implements RequestDomainService {
+@Service
+public class RequestDomainServiceImpl implements RequestService {
     @Autowired
     private RequestRepository requestRepository;
 
@@ -22,67 +31,97 @@ public class RequestDomainServiceImpl implements RequestDomainService {
     @Autowired
     private ClientRepository clientRepository;
 
+    @Autowired
+    private ModelMapper modelMapper;
+
     //создание заявки с проверкой клиента и автомобиля
+
+    @Transactional
     @Override
-    public void addRequest(Request request, int clientId, int carId) {
-        carRepository.updateStatus(carId, CarStatus.RESERVED);
+    public boolean addRequest(RequestDto requestDto) {
+        Client client = clientRepository.findById(Client.class, requestDto.getClientId()).
+                orElseThrow(() -> new IllegalArgumentException("Клиент не найден"));
+        Car car = carRepository.findById(Car.class, requestDto.getCarId()).
+                orElseThrow(() -> new IllegalArgumentException("Автомобиль не найден"));;
+        car.setCarStatus(CarStatus.RESERVED);
+        Request request = new Request(client, car,requestDto.getDateStart(), requestDto.getDateEnd(), requestDto.getNumDays());
         requestRepository.create(request);
-        if (checkClient(clientId, carId, request.getNumDays()) && checkCar(carId, request.getDateStart(), request.getNumDays())) {
-            requestRepository.updateStatus(request.getId(), RequestStatus.APPROVED);
-            Car car = carRepository.findById(Car.class, carId);
+        if (checkClient(client.getId(), car.getId(), request.getNumDays()) && checkCar(car.getId(), request.getDateStart(), request.getNumDays())) {
+            request.setRequestStatus(RequestStatus.APPROVED);
             Payment payment = new Payment(car.getCostPerDay() * request.getNumDays(), LocalDateTime.now(), request);
             paymentRepository.create(payment);
-        } else requestRepository.updateStatus(request.getId(), RequestStatus.NOT_APPROVED);
+            car.setCarStatus(CarStatus.AVAILABLE);
+            return true;
+        }
+        request.setRequestStatus(RequestStatus.NOT_APPROVED);
+        car.setCarStatus(CarStatus.AVAILABLE);
+        return false;
 
-        carRepository.updateStatus(carId, CarStatus.AVAILABLE);
+    }
+
+    @Override
+    public RequestDto getRequestById(int id) {
+        return modelMapper.map(requestRepository.findById(Request.class, id), RequestDto.class);
     }
 
 
-    @Override
     public boolean checkClient(int clientId, int carId, int numDays) {
-        Client client = clientRepository.findById(Client.class, clientId);
+        Client client = clientRepository.findById(Client.class, clientId).
+                orElseThrow(() -> new IllegalArgumentException("Клиент не найден"));;
+        Car car = carRepository.findById(Car.class, carId).
+                orElseThrow(() -> new IllegalArgumentException("Автомобиль не найден"));;
         int minAge = 18;
         int minExperience = 0;
         int minDays = 1;
-        RentalConditions rentalConditions = this.rentalConditions.findByCarId(carId);
+        RentalConditions rentalConditions = car.getRentalConditions();
         if (rentalConditions != null) {
             minAge = rentalConditions.getMinAge();
             minExperience = rentalConditions.getMinDrivingExperience();
             minDays = rentalConditions.getMinRentDays();
         }
-        int clientAge = Period.between(LocalDate.now(), client.getBirthday()).getYears();
-        if (clientAge >= minAge && client.getDrivingExperience() >= minExperience && numDays >= minDays)
+        int clientAge = Period.between(client.getBirthday(),LocalDate.now()).getYears();
+        if (clientAge >= minAge && client.getDrivingExperience() >= minExperience && numDays >= minDays) {
             return true;
+        }
         else return false;
     }
 
-    @Override
     public boolean checkCar(int id, LocalDateTime startDate, int numDays) {
         LocalDateTime endDate = startDate.plusDays(numDays);
         Car car = carRepository.findByDateRequest(id, startDate, endDate);
-        if (car == null) return true;
+        if (car == null){
+            return true;}
         return false;
     }
 
     //отмена заявки не менее чем за сутки до начала аренды
+
+    @Transactional
     @Override
-    public void returnRequest(int idRequest) {
-        Request request = requestRepository.findById(Request.class, idRequest);
+    public boolean returnRequest(int idRequest) {
+        Request request = requestRepository.findById(Request.class, idRequest).
+                orElseThrow(() -> new IllegalArgumentException("Заявка не найдена"));;
         Payment payment= paymentRepository.findByRequest(idRequest);
         if (checkRequest(idRequest)){
             if (request.getRequestStatus() == RequestStatus.APPROVED) {
-                requestRepository.updateStatus(idRequest, RequestStatus.CANCELED);
+                request.setRequestStatus(RequestStatus.CANCELED);
+                payment.setPaymentStatus(PaymentStatus.CANCELED);
+                return true;
             }else if(request.getRequestStatus() == RequestStatus.CONFIRMED){
-                requestRepository.updateStatus(idRequest, RequestStatus.CANCELED);
-                paymentRepository.updateStatus(payment.getId(),PaymentStatus.RETURNED);
+                request.setRequestStatus(RequestStatus.CANCELED);
+                payment.setPaymentStatus(PaymentStatus.RETURNED);
+                return true;
             }
-        }
+        }return false;
     }
 
     @Override
     public boolean checkRequest(int idRequest) {
-        Request request = requestRepository.findById(Request.class, idRequest);
-        if ((request.getDateStart().minusDays(request.getNumDays())).getHour() < 24 ) return false;
+        Request request = requestRepository.findById(Request.class, idRequest).
+                orElseThrow(() -> new IllegalArgumentException("Заявка не найдена"));;
+        LocalDateTime startDate = request.getDateStart();
+        LocalDateTime now = LocalDateTime.now();
+        if (Duration.between(now, startDate).toHours() < 24 ) return false;
         else return true;
     }
 

@@ -33,21 +33,10 @@ public class RequestRepositoryImpl extends AbstractRepository<Request>  implemen
 
 
     @Override
-    public void updateStatus(int id, RequestStatus requestStatus) {
-        TypedQuery<Request> query = entityManager.createQuery(
-                "UPDATE Request AS r " +
-                        " SET r.requestStatus = :requestStatus " +
-                        " WHERE r.id = :id ", Request.class);
-        query.setParameter("requestStatus", requestStatus)
-                .setParameter("id", id)
-                .getResultList();
-    }
-
-    @Override
     public Request findByPayment(int paymentId) {
         TypedQuery<Request> query = entityManager.createQuery(
-                "select r.startDate from Request r " +
-                        "join r.payment p where p.paymentId = :paymentId ", Request.class);
+                "select r from Request r " +
+                        "join r.payment p where p.id = :paymentId ", Request.class);
         return query.setParameter("paymentId",paymentId)
                 .getSingleResult();
     }
