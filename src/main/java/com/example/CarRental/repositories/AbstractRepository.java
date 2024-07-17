@@ -5,24 +5,27 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.TypedQuery;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.stereotype.Repository;
+import org.springframework.data.repository.NoRepositoryBean;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 
-@Repository
-public abstract class AbstractRepository<T>{
+@NoRepositoryBean
+public abstract class AbstractRepository<T> {
+
         @PersistenceContext
         private EntityManager entityManager;
 
         @Transactional
-        public void create(T entity){
+        public T create(T entity){
                 entityManager.persist(entity);
+                return entity;
         };
 
         @Transactional
-        public T findById(Class<T> entityClass, int id){
-                return entityManager.find(entityClass,id);
+        public Optional<T> findById(Class<T> entityClass, int id){
+                return Optional.ofNullable(entityManager.find(entityClass,id));
         };
 
         @Transactional
@@ -33,6 +36,12 @@ public abstract class AbstractRepository<T>{
         @Transactional
         public void delete(T entity) {
                 entityManager.remove(entity);
+        }
+
+        @Transactional
+        public List<T> getAll(Class<T> entityClass) {
+                TypedQuery<T> query = entityManager.createQuery("from " + entityClass.getName(), entityClass);
+                return query.getResultList();
         }
 
 
