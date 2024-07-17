@@ -1,10 +1,15 @@
 package com.example.CarRental.services;
 
-import com.example.CarRental.domain.Payment;
 
-import java.util.List;
 
 public interface PaymentService {
-    void addPayment(Payment payment);
-    List<Payment> findByClientId(int idClient);
+
+    boolean makePayment(int idPayment);
+
+    boolean returnPayment(int idPayment);
+
+    int getDiscountByClient(int idClient);
+
+    int applyDiscount(int idPayment);
+
 }

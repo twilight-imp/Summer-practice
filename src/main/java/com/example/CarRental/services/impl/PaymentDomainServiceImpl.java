@@ -1,16 +1,26 @@
 package com.example.CarRental.services.impl;
 
 import com.example.CarRental.domain.*;
+import com.example.CarRental.dtos.CarDto;
+import com.example.CarRental.dtos.PaymentDto;
 import com.example.CarRental.repositories.CarRepository;
 import com.example.CarRental.repositories.ClientRepository;
 import com.example.CarRental.repositories.PaymentRepository;
 import com.example.CarRental.repositories.RequestRepository;
-import com.example.CarRental.services.PaymentDomainService;
+import com.example.CarRental.services.PaymentService;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.time.Duration;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.List;
 
-public class PaymentDomainServiceImpl implements PaymentDomainService {
+
+@Service
+public class PaymentDomainServiceImpl implements PaymentService {
 
     @Autowired
     private PaymentRepository paymentRepository;
@@ -24,69 +34,87 @@ public class PaymentDomainServiceImpl implements PaymentDomainService {
     @Autowired
     private CarRepository carRepository;
 
+    @Autowired
+    private ModelMapper modelMapper;
+
+
 
     //произведение оплаты со сменой статуса платежа и заявки и применение скидки перед оплатой
+    @Transactional
     @Override
-    public void makePayment(int idPayment) {
-        Payment payment = paymentRepository.findById(Payment.class, idPayment);
+    public boolean makePayment(int idPayment) {
+        Payment payment = paymentRepository.findById(Payment.class, idPayment).
+                orElseThrow(() -> new IllegalArgumentException("Оплата не найдена"));
         Request request = requestRepository.findByPayment(idPayment);
         if(payment.getPaymentStatus() == PaymentStatus.AWAITING) {
             if (checkPayment(idPayment)) {
-                applyDiscount(idPayment);
-                paymentRepository.updateStatus(idPayment, PaymentStatus.COMPLETED);
-                requestRepository.updateStatus(request.getId(), RequestStatus.CONFIRMED);
+                payment.setPaymentStatus(PaymentStatus.COMPLETED);
+                request.setRequestStatus(RequestStatus.CONFIRMED);
+                return true;
             }
-            else paymentRepository.updateStatus(idPayment, PaymentStatus.OVERDUE);
-        }
+            else {
+                payment.setPaymentStatus(PaymentStatus.OVERDUE);
+            }
+        }return false;
     }
 
     //возврат платежа не менее чем за сутки до начала аренды
+    @Transactional
     @Override
-    public void returnPayment(int idPayment) {
-        Payment payment = paymentRepository.findById(Payment.class, idPayment);
+    public boolean returnPayment(int idPayment) {
+        Payment payment = paymentRepository.findById(Payment.class, idPayment).
+                orElseThrow(() -> new IllegalArgumentException("Оплата не найдена"));;
         if(payment.getPaymentStatus() == PaymentStatus.COMPLETED)
         if (checkPayment((idPayment))) {
-            paymentRepository.updateStatus(idPayment, PaymentStatus.RETURNED);
+            payment.setPaymentStatus(PaymentStatus.RETURNED);
+            return true;
         }
+        return false;
     }
 
     //проверка просрочки платежа
-    @Override
     public void overduePayment(int idPayment) {
+        Payment payment = paymentRepository.findById(Payment.class, idPayment).
+                orElseThrow(() -> new IllegalArgumentException("Оплата не найдена"));;
+        Request request = requestRepository.findByPayment(idPayment);
         if(!checkPayment(idPayment)){
-            paymentRepository.updateStatus(idPayment, PaymentStatus.OVERDUE);
-            requestRepository.updateStatus(requestRepository.findByPayment(idPayment).getId(), RequestStatus.CANCELED);
+            payment.setPaymentStatus(PaymentStatus.OVERDUE);
+            request.setRequestStatus(RequestStatus.CANCELED);
         }
     }
 
     //получение персональной скидки
     @Override
     public int getDiscountByClient(int idClient) {
-        Client client = clientRepository.findById(Client.class, idClient);
-        if (LocalDate.now() == client.getBirthday()) return 25;
+        Client client = clientRepository.findById(Client.class, idClient).
+                orElseThrow(() -> new IllegalArgumentException("Клиент не найден"));;
+        if (LocalDate.now().getDayOfMonth() == client.getBirthday().getDayOfMonth()) return 25;
         else if (paymentRepository.findByClientId(idClient).size() > 30) return 15;
         else if (paymentRepository.findByClientId(idClient).size() > 15) return 10;
         else if (paymentRepository.findByClientId(idClient).size() > 5) return 5;
         else return 0;
     }
 
+    @Transactional
     @Override
-    public void applyDiscount(int idPayment) {
-        Payment payment = paymentRepository.findById(Payment.class, idPayment);
+    public int applyDiscount(int idPayment) {
+        Payment payment = paymentRepository.findById(Payment.class, idPayment).
+                orElseThrow(() -> new IllegalArgumentException("Оплата не найдена"));
         Client client = requestRepository.findByPayment(idPayment).getClient();
         int discount = getDiscountByClient(client.getId());
         if (discount!= 0){
             int newAmount = (int) (payment.getAmount() - Math.round(payment.getAmount() * discount * 0.01));
-            paymentRepository.updateAmount(idPayment, newAmount );
+            payment.setAmount(newAmount);
+            return newAmount;
         }
+        return 0;
     }
 
-
-    @Override
     public boolean checkPayment(int idPayment) {
         Request request = requestRepository.findByPayment(idPayment);
-        Payment payment = paymentRepository.findById(Payment.class, idPayment);
-        if ((request.getDateStart().minusDays(request.getNumDays())).getHour() < 24 ) return false;
+        LocalDateTime startDate = request.getDateStart();
+        LocalDateTime now = LocalDateTime.now();
+        if (Duration.between(now, startDate).toHours() < 24 ) return false;
         else return true;
     }
 
