@@ -3,11 +3,14 @@ package com.example.CarRental.repositories;
 import com.example.CarRental.domain.Client;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+import java.util.Optional;
+
 @Repository
 public interface ClientRepository{
-    void create(Client client);
-    Client findById(Class<Client> clientClass, int id);
-    Client update(Client client);
+    Client create(Client client);
+    Optional<Client> findById(Class<Client> clientClass, int id);
 
-    Client findByPhone(String phone);
+    List<Client> getAll(Class<Client> clientClass);
+
 }

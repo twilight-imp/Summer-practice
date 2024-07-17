@@ -1,9 +1,11 @@
 package com.example.CarRental.services;
 
-import com.example.CarRental.domain.Car;
-import com.example.CarRental.domain.Client;
+import com.example.CarRental.dtos.ClientDto;
+
+import java.util.List;
 
 public interface ClientService {
-    void addClient(Client client);
-    Client getClientById(int id);
+    ClientDto addClient(ClientDto clientDto);
+    ClientDto getClientById(int id);
+    List<ClientDto> findAll();
 }
