@@ -86,7 +86,7 @@ public class Car extends BaseEntity {
     public void setCostPerDay(int costPerDay) {
         this.costPerDay = costPerDay;
     }
-    @Column(name = "status")
+    @Column(name = "status",updatable = true)
     @Enumerated(EnumType.STRING)
     public CarStatus getCarStatus() {
         return carStatus;
@@ -95,7 +95,7 @@ public class Car extends BaseEntity {
         this.carStatus = carStatus;
     }
 
-    @ManyToOne(optional = false)
+    @ManyToOne(optional = false, cascade=CascadeType.ALL)
     @JoinColumn(name = "office_id", referencedColumnName = "id")
     public Office getOffice() {
         return office;
